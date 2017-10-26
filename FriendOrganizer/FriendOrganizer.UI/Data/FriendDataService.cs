@@ -1,17 +1,26 @@
-﻿using FriendOrganizer.Model;
+﻿using FriendOrganizer.DataAccess;
+using FriendOrganizer.Model;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FriendOrganizer.UI.Data
 {
     public class FriendDataService : IFriendDataService
     {
-        public IEnumerable<Friend> GetAll()
+        private Func<FriendOrganizerDbContext> _contextCreator;
+        public FriendDataService(Func<FriendOrganizerDbContext> contextCreator)
         {
-            //ToDo: Load data from database.
-            yield return new Friend { FirstName = "Kenopp", LastName = "Alic" };
-            yield return new Friend { FirstName = "Jacob", LastName = "Gan" };
-            yield return new Friend { FirstName = "Jacob", LastName = "Demo" };
-            yield return new Friend { FirstName = "Samwise", LastName = "Gamgi" };
+            _contextCreator = contextCreator;
+        }
+        public async Task<List<Friend>> GetAllAsync()
+        {
+            using(var ctx = _contextCreator())
+            {
+                return await ctx.Friends.AsNoTracking().ToListAsync();
+            }
         }
     }
 }
