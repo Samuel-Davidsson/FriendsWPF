@@ -15,12 +15,19 @@ namespace FriendOrganizer.DataAccess.Migrations
 
         protected override void Seed(FriendOrganizer.DataAccess.FriendOrganizerDbContext context)
         {
-            context.Friends.AddOrUpdate(f => f.FirstName,
-            new Friend { FirstName = "Kenopp", LastName = "Alic" },
-            new Friend { FirstName = "Jacob", LastName = "Gan" },
-            new Friend { FirstName = "Jacob", LastName = "Demo" },
-            new Friend { FirstName = "Samwise", LastName = "Gamgi" }
+
+            context.Friends.AddOrUpdate(
+              f => f.FirstName,
+              new Friend { FirstName = "Andrew Peters" },
+              new Friend { FirstName = "Brice Lambson" },
+              new Friend { FirstName = "Rowan Miller" }
             );
+            context.ProgrammingLanguages.AddOrUpdate(
+                pl => pl.Name,
+                new ProgrammingLanguage { Name = "C#" },
+                new ProgrammingLanguage { Name = "Java" }
+                );
+
         }
     }
 }
