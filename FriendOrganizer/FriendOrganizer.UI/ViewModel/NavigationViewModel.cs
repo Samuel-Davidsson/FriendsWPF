@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Linq;
 using FriendOrganizer.UI.Data.Lookups;
+using System;
 
 namespace FriendOrganizer.UI.ViewModel
 {
@@ -20,12 +21,7 @@ namespace FriendOrganizer.UI.ViewModel
             _eventAggregator = eventAggregator;
             Friends = new ObservableCollection<NavigationItemViewModel>();
             _eventAggregator.GetEvent<AfterFriendSavedEvent>().Subscribe(AfterFriendSaved);
-        }
-
-        private void AfterFriendSaved(AfterFriendSavedEventArgs obj)
-        {
-            var loookupItem = Friends.Single(f => f.Id == obj.Id);
-            loookupItem.DisplayMember = obj.DisplayMember;
+            _eventAggregator.GetEvent<AfterFriendDeletedEvent>().Subscribe(AfterFriendDeleted);
         }
 
         public async Task LoadAsync()
@@ -37,8 +33,29 @@ namespace FriendOrganizer.UI.ViewModel
                 Friends.Add(new NavigationItemViewModel(item.Id,item.DisplayMember,
                     _eventAggregator));
             }
+        }
 
+        private void AfterFriendDeleted(int friendId)
+        {
+            var friend = Friends.SingleOrDefault(f => f.Id == friendId);
+            if (friend != null)
+            {
+                Friends.Remove(friend);
+            }
         }
+
+        private void AfterFriendSaved(AfterFriendSavedEventArgs obj)
+        {
+            var loookupItem = Friends.SingleOrDefault(f => f.Id == obj.Id);
+            if (loookupItem == null)
+            {
+                Friends.Add(new NavigationItemViewModel(obj.Id, obj.DisplayMember, _eventAggregator));
+            }
+            else
+            {
+                loookupItem.DisplayMember = obj.DisplayMember;
+            }
         }
+      }
     }
 
