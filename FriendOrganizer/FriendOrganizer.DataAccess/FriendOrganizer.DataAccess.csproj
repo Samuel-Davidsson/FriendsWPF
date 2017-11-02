@@ -52,6 +52,10 @@
     <Compile Include="Migrations\201711021734237_IntialDatabase.Designer.cs">
       <DependentUpon>201711021734237_IntialDatabase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711022038180_AddedFriendPhoneNumbers.cs" />
+    <Compile Include="Migrations\201711022038180_AddedFriendPhoneNumbers.Designer.cs">
+      <DependentUpon>201711022038180_AddedFriendPhoneNumbers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -68,6 +72,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201711021734237_IntialDatabase.resx">
       <DependentUpon>201711021734237_IntialDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711022038180_AddedFriendPhoneNumbers.resx">
+      <DependentUpon>201711022038180_AddedFriendPhoneNumbers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
