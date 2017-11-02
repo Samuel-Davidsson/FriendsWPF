@@ -39,6 +39,7 @@ namespace FriendOrganizer.UI.ViewModel
                     ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                 }
             };
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
         }
 
         public FriendWrapper Friend
@@ -58,16 +59,18 @@ namespace FriendOrganizer.UI.ViewModel
             get { return _hasChanges; }
             set
             {
-                _hasChanges = value;
-                OnPropertyChanged();
-                ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+                if(_hasChanges != value)
+                {
+                    _hasChanges = value;
+                    OnPropertyChanged();
+                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+                }                
             }
         }
 
-
         private bool OnSaveCanExecute()
         {
-            return Friend!=null && !Friend.HasErrors;
+            return Friend!=null && !Friend.HasErrors && HasChanges;
         }
 
         private async void OnSaveExecute()
