@@ -7,7 +7,7 @@ namespace FriendOrganizer.UI.Event
     }
     public class OpenDetailViewEventEventArgs
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public string ViewModelName { get; set; }
     }
 }

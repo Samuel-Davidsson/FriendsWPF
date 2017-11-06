@@ -9,13 +9,13 @@ namespace FriendOrganizer.UI.View.Services
             MessageBox.Show(text, "Info");
         }
 
-        public MessageDialogResult ShowOkCancelDialoga(string text, string title)
+        public MessageDialogResult ShowOkCancelDialog(string text, string title)
         {
             var result = MessageBox.Show(text, title, MessageBoxButton.OKCancel);
             return result == MessageBoxResult.OK
                 ? MessageDialogResult.Ok
                 : MessageDialogResult.Cancel;
-        }
+        }     
     }
     public enum MessageDialogResult
     {
