@@ -17,10 +17,13 @@ namespace FriendOrganizer.UI.StartUp
             builder.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
 
             builder.RegisterType<FriendOrganizerDbContext>().AsSelf();
+
             builder.RegisterType<MainWindow>().AsSelf();
+
             builder.RegisterType<MainViewModel>().AsSelf();
-            builder.RegisterType<FriendDetailViewModel>().As<IFriendDetailViewModel>();
+            builder.RegisterType<FriendDetailViewModel>().Keyed<IDetailViewModel>(nameof(FriendDetailViewModel));
             builder.RegisterType<NavigationViewModel>().As<INavigationViewModel>();
+            builder.RegisterType<MeetingDetailViewModel>().Keyed<IDetailViewModel>(nameof(MeetingDetailViewModel));
 
             builder.RegisterType<LookupDataService>().AsImplementedInterfaces();
             builder.RegisterType<FriendRepository>().As<IFriendRepository>();
