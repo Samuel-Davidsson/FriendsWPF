@@ -81,6 +81,8 @@ namespace FriendOrganizer.UI.ViewModel
             var meeting = meetingId.HasValue
                 ? await _meetingRepository.GetByIdAsync(meetingId.Value)
                 : CreateNewMeeting();
+            Id = meeting.Id;
+
             InitalizeMeeting(meeting);
             _allFriends = await _meetingRepository.GetAllFriendsAsync();
 
@@ -119,12 +121,22 @@ namespace FriendOrganizer.UI.ViewModel
                  {
                      ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                  }
+                 if (e.PropertyName == nameof(Meeting.Title))
+                 {
+                     SetTitle();
+                 }
              };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
             if (Meeting.Id == 0)
             {
                 Meeting.Title = "";
             }
+            SetTitle();
+        }
+
+        private void SetTitle()
+        {
+            Title = Meeting.Title;
         }
 
         private Meeting CreateNewMeeting()
@@ -189,6 +201,7 @@ namespace FriendOrganizer.UI.ViewModel
         {
             await _meetingRepository.SaveAsync();
             HasChanges = _meetingRepository.HasChanges();
+            Id = Meeting.Id;
             RaiseDetailSavedEvent(Meeting.Id, Meeting.Title);
         }
 
