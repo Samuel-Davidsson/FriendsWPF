@@ -16,10 +16,11 @@ namespace FriendOrganizer.UI.ViewModel
         {
             _eventAggregator = eventAggregator;
             Id = id;
-            _detailViewModelName = detailViewModelName;
             DisplayMember = displayMember;
+            _detailViewModelName = detailViewModelName;
             OpenDetailViewCommand = new DelegateCommand(OnOpenDetailViewExecute);
         }
+
         public int Id { get; }
 
         public string DisplayMember
@@ -37,12 +38,12 @@ namespace FriendOrganizer.UI.ViewModel
         private void OnOpenDetailViewExecute()
         {
             _eventAggregator.GetEvent<OpenDetailViewEvent>()
-                       .Publish(
-                new OpenDetailViewEventEventArgs
-                {
-                    Id = Id,
-                    ViewModelName = _detailViewModelName
-                });
+                  .Publish(
+              new OpenDetailViewEventArgs
+              {
+                  Id = Id,
+                  ViewModelName = _detailViewModelName
+              });
         }
     }
 }

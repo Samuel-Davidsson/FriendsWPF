@@ -2,10 +2,10 @@
 
 namespace FriendOrganizer.UI.Event
 {
-    public class OpenDetailViewEvent:PubSubEvent<OpenDetailViewEventEventArgs>
+    public class OpenDetailViewEvent:PubSubEvent<OpenDetailViewEventArgs>
     {
     }
-    public class OpenDetailViewEventEventArgs
+    public class OpenDetailViewEventArgs
     {
         public int Id { get; set; }
         public string ViewModelName { get; set; }

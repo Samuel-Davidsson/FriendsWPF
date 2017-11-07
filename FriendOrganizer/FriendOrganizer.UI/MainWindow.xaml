@@ -3,19 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FriendOrganizer.UI"
         xmlns:view="clr-namespace:FriendOrganizer.UI.View"
+        xmlns:local="clr-namespace:FriendOrganizer.UI"
         xmlns:viewModel="clr-namespace:FriendOrganizer.UI.ViewModel"
         mc:Ignorable="d"
         Title="FriendOrganizer" Height="700" Width="1000" FontSize="20"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
-        <!--<viewModel:DatabindingDebugConverter x:Key="debugConverter" />-->
         <DataTemplate DataType="{x:Type viewModel:FriendDetailViewModel}">
             <view:FriendDetailView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type viewModel:MeetingDetailViewModel}">
             <view:MeetingDetailView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModel:ProgrammingLanguageDetailViewModel}">
+            <view:ProgrammingLanguageDetailView/>
         </DataTemplate>
     </Window.Resources>
     <Grid>
@@ -28,28 +30,40 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Menu Grid.ColumnSpan="2" FontSize="20">
-                <MenuItem Header="Create">
+            <MenuItem Header="Create">
                 <MenuItem Header="New Friend" Command="{Binding CreateNewDetailCommand}"
-                          CommandParameter="{x:Type viewModel:FriendDetailViewModel}"/>
+                  CommandParameter="{x:Type viewModel:FriendDetailViewModel}"/>
                 <MenuItem Header="New Meeting" Command="{Binding CreateNewDetailCommand}"
-                          CommandParameter="{x:Type viewModel:MeetingDetailViewModel}"/>
+                  CommandParameter="{x:Type viewModel:MeetingDetailViewModel}"/>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Programming Languages"
+                  Command="{Binding OpenSingleDetailViewCommand}"
+                  CommandParameter="{x:Type viewModel:ProgrammingLanguageDetailViewModel}"/>
             </MenuItem>
         </Menu>
-        <view:NavigationView Grid.Row="1" DataContext="{Binding NavigationViewModel}"/>
-        
-        
-        
-        <TabControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding DetailViewModels}"
-                    SelectedItem="{Binding SelectedDetailViewModel,Mode=TwoWay}">
+        <view:NavigationView Grid.Row="1"
+                         DataContext="{Binding NavigationViewModel}"/>
+        <TabControl Grid.Row="1" Grid.Column="1" 
+                ItemsSource="{Binding DetailViewModels}"
+                SelectedItem="{Binding SelectedDetailViewModel,Mode=TwoWay}">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem"
+               BasedOn="{StaticResource {x:Type TabItem}}">
+                    <Setter Property="Background" Value="#333333"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Style>
+            </TabControl.ItemContainerStyle>
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Title}"/>
-                        <!--Converter={StaticResource debugConverter}-->
-                        <TextBlock Text="*" Visibility="{Binding HasChanges, 
-                            Converter={StaticResource booleanToVisibilityConverter}}"/>
-                        <Button Command="{Binding CloseDetailViewCommand}"
-                                VerticalAlignment="Top" Margin="2" Content="x" FontSize="20"/>
+                        <TextBlock Text="*" Visibility="{Binding HasChanges,
+              Converter={StaticResource booleanToVisibilityConverter}}"/>
+                        <Button Command="{Binding CloseDetailViewCommand}" 
+                    VerticalContentAlignment="Top" Margin="2 0 2 2"
+                    Content="X" FontSize="20"/>
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>

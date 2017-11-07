@@ -20,14 +20,14 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Label Content="Title" Margin="10 10 10 0"/>
-        <TextBox Grid.Row="1" Text="{Binding Meeting.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 10"/>
+        <TextBox Grid.Row="1" Text="{Binding Meeting.Title,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 10"/>
 
-        <Label Grid.Row="2" Content="Start" Margin="10, 0"/>
-        <Toolkit:DateTimePicker HorizontalAlignment="Left" Grid.Row="3" Value="{Binding Meeting.DateFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 10"/>
+        <Label Grid.Row="2" Content="Start" Margin="10 0"/>
+        <Toolkit:DateTimePicker Grid.Row="3" Value="{Binding Meeting.DateFrom,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 10"/>
 
-        <Label Grid.Row="4" Content="End" Margin=" 10 0"/>
-        <Toolkit:DateTimePicker HorizontalAlignment="Left" Grid.Row="5" Value="{Binding Meeting.DateTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 10"/>
-        
+        <Label Grid.Row="4" Content="End" Margin="10 0"/>
+        <Toolkit:DateTimePicker Grid.Row="5" Value="{Binding Meeting.DateTo,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 10"/>
+
         <Grid Grid.Row="6" Margin="10">
             <Grid.Resources>
                 <DataTemplate DataType="{x:Type model:Friend}">
@@ -43,9 +43,11 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
+
             <Label Content="Added Friends"/>
             <ListView Grid.Row="1" ItemsSource="{Binding AddedFriends}"
-                      SelectedItem="{Binding SelectedAddedFriend}"/>
+                SelectedItem="{Binding SelectedAddedFriend}"/>
+
             <StackPanel Grid.Row="1" Grid.Column="1">
                 <Button Content="&lt;&lt;" Margin="10" Command="{Binding AddFriendCommand}"/>
                 <Button Content="&gt;&gt;" Margin="10 0 10 10" Command="{Binding RemoveFriendCommand}"/>
@@ -53,11 +55,12 @@
 
             <Label Content="Available Friends" Grid.Column="2"/>
             <ListView Grid.Row="1" ItemsSource="{Binding AvailableFriends}"
-                      SelectedItem="{Binding SelectedAvailableFriend}" Grid.Column="2"/>
+                SelectedItem="{Binding SelectedAvailableFriend}" Grid.Column="2"/>
         </Grid>
+
         <StackPanel Grid.Row="7" Orientation="Horizontal">
-            <Button Content="Save" Width="75" Margin="10" Command="{Binding SaveCommand}"/>
-            <Button Content="Delete" Width="75" Margin="10" Command="{Binding DeleteCommand}"/>
+            <Button Content="Save" Width="75"  Margin="10" Command="{Binding SaveCommand}"/>
+            <Button Content="Delete" Width="75"  Margin="10" Command="{Binding DeleteCommand}"/>
         </StackPanel>
     </Grid>
 </UserControl>

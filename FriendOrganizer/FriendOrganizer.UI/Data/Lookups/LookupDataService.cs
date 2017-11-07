@@ -47,7 +47,7 @@ namespace FriendOrganizer.UI.Data.Lookups
             }
         }
 
-        public async Task<IEnumerable<LookupItem>> GetProgrammingLanguageLookUpAsync()
+        public async Task<IEnumerable<LookupItem>> GetProgrammingLanguageLookupAsync()
         {
             using (var ctx = _contextCreator())
             {

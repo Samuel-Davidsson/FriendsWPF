@@ -10,16 +10,16 @@ namespace FriendOrganizer.UI.ViewModel
 {
     public class NavigationViewModel : ViewModelBase, INavigationViewModel
     {
-        private IFriendLookupDataService _friendLookupDataService;
+        private IFriendLookupDataService _friendLookupService;
         private IEventAggregator _eventAggregator;
         private IMeetingLookUpDataService _meetingLookupService;
        
-        public NavigationViewModel(IFriendLookupDataService friendLookupDataService, IEventAggregator eventAggregator,
-            IMeetingLookUpDataService meetingLookUpService)
+        public NavigationViewModel(IFriendLookupDataService friendLookupService, IEventAggregator eventAggregator,
+            IMeetingLookUpDataService meetingLookupService)
         {
-            _friendLookupDataService = friendLookupDataService;
+            _friendLookupService = friendLookupService;
+            _meetingLookupService = meetingLookupService;
             _eventAggregator = eventAggregator;
-            _meetingLookupService = meetingLookUpService;
             Friends = new ObservableCollection<NavigationItemViewModel>();
             Meetings = new ObservableCollection<NavigationItemViewModel>();
             _eventAggregator.GetEvent<AfterDetailSavedEvent>().Subscribe(AfterDetailSaved);
@@ -28,19 +28,21 @@ namespace FriendOrganizer.UI.ViewModel
 
         public async Task LoadAsync()
         {
-            var lookup = await _friendLookupDataService.GetFriendLookupAsync();
+            var lookup = await _friendLookupService.GetFriendLookupAsync();
             Friends.Clear();
             foreach (var item in lookup)
             {
-                Friends.Add(new NavigationItemViewModel(item.Id,item.DisplayMember, nameof(FriendDetailViewModel),
-                    _eventAggregator));
+                Friends.Add(new NavigationItemViewModel(item.Id, item.DisplayMember,
+                  nameof(FriendDetailViewModel),
+                  _eventAggregator));
             }
             lookup = await _meetingLookupService.GetMeetingLookupAsync();
             Meetings.Clear();
             foreach (var item in lookup)
             {
-                Meetings.Add(new NavigationItemViewModel(item.Id, item.DisplayMember, nameof(MeetingDetailViewModel),
-                    _eventAggregator));
+                Meetings.Add(new NavigationItemViewModel(item.Id, item.DisplayMember,
+                  nameof(MeetingDetailViewModel),
+                  _eventAggregator));
             }
         }
 
@@ -50,7 +52,6 @@ namespace FriendOrganizer.UI.ViewModel
 
         private void AfterDetailDeleted(AfterDetailDeletedEventArgs args)
         {
-
             switch (args.ViewModelName)
             {
                 case nameof(FriendDetailViewModel):
@@ -62,7 +63,8 @@ namespace FriendOrganizer.UI.ViewModel
             }
         }
 
-        private void AfterDetailDeleted(ObservableCollection<NavigationItemViewModel> items, AfterDetailDeletedEventArgs args)
+        private void AfterDetailDeleted(ObservableCollection<NavigationItemViewModel> items,
+          AfterDetailDeletedEventArgs args)
         {
             var item = items.SingleOrDefault(f => f.Id == args.Id);
             if (item != null)
@@ -84,19 +86,20 @@ namespace FriendOrganizer.UI.ViewModel
             }
         }
 
-        private void AfterDetailSaved(ObservableCollection<NavigationItemViewModel> items, AfterDetailSavedEventArgs args)
+        private void AfterDetailSaved(ObservableCollection<NavigationItemViewModel> items,
+          AfterDetailSavedEventArgs args)
         {
-            var loookupItem = items.SingleOrDefault(f => f.Id == args.Id);
-            if (loookupItem == null)
+            var lookupItem = items.SingleOrDefault(l => l.Id == args.Id);
+            if (lookupItem == null)
             {
                 items.Add(new NavigationItemViewModel(args.Id, args.DisplayMember,
-                    args.ViewModelName, _eventAggregator));
+                  args.ViewModelName,
+                  _eventAggregator));
             }
             else
             {
-                loookupItem.DisplayMember = args.DisplayMember;
+                lookupItem.DisplayMember = args.DisplayMember;
             }
         }
     }
-    }
-
+}
