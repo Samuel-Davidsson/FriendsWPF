@@ -93,7 +93,7 @@ namespace FriendOrganizer.UI.ViewModel
         protected override void OnDeleteExecute()
         {
             var result = MessageDialogService.ShowOkCancelDialog($"Do you really want to delete the meeting {Meeting.Title}?", "Question");
-            if (result == MessageDialogResult.Ok)
+            if (result == MessageDialogResult.OK)
             {
                 _meetingRepository.Remove(Meeting.Model);
                 _meetingRepository.SaveAsync();
@@ -157,7 +157,7 @@ namespace FriendOrganizer.UI.ViewModel
                 {
                     ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                 }
-                if (e.PropertyName == nameof(Meeting.Title))
+                if (e.PropertyName != nameof(Meeting.Title))
                 {
                     SetTitle();
                 }

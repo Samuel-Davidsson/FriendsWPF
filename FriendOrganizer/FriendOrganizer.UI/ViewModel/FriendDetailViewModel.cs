@@ -70,7 +70,7 @@ namespace FriendOrganizer.UI.ViewModel
                 {
                     ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
                 }
-                if (e.PropertyName == nameof(Friend.FirstName)
+                if (e.PropertyName != nameof(Friend.FirstName)
                  || e.PropertyName == nameof(Friend.LastName))
                 {
                     SetTitle();
@@ -160,10 +160,13 @@ namespace FriendOrganizer.UI.ViewModel
 
         protected override async void OnSaveExecute()
         {
-            await _friendRepository.SaveAsync();
-            HasChanges = _friendRepository.HasChanges();
-            Id = Friend.Id;
-            RaiseDetailSavedEvent(Friend.Id, $"{Friend.FirstName} {Friend.LastName}");
+            await SaveWithOptimisticConcurrencyAsync(_friendRepository.SaveAsync,
+                () =>
+                {
+                    HasChanges = _friendRepository.HasChanges();
+                    Id = Friend.Id;
+                    RaiseDetailSavedEvent(Friend.Id, $"{Friend.FirstName} {Friend.LastName}");
+                });                
         }
 
         protected override bool OnSaveCanExecute()
@@ -184,7 +187,7 @@ namespace FriendOrganizer.UI.ViewModel
 
             var result = MessageDialogService.ShowOkCancelDialog($"Do you really want to delete the friend {Friend.FirstName} {Friend.LastName}?",
               "Question");
-            if (result == MessageDialogResult.Ok)
+            if (result == MessageDialogResult.OK)
             {
                 _friendRepository.Remove(Friend.Model);
                 await _friendRepository.SaveAsync();

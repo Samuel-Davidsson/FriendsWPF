@@ -5,20 +5,22 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System;
 using FriendOrganizer.UI.View.Services;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
 
 namespace FriendOrganizer.UI.ViewModel
 {
     public abstract class DetailViewModelBase : ViewModelBase, IDetailViewModel
     {
-            private bool _hasChanges;
-            protected readonly IEventAggregator EventAggregator;
-            protected readonly IMessageDialogService MessageDialogService;
-            private int _id;
-            private string _title;
+        private bool _hasChanges;
+        protected readonly IEventAggregator EventAggregator;
+        protected readonly IMessageDialogService MessageDialogService;
+        private int _id;
+        private string _title;
 
-            public DetailViewModelBase(IEventAggregator eventAggregator,
-              IMessageDialogService messageDialogService)
-            {
+        public DetailViewModelBase(IEventAggregator eventAggregator,
+          IMessageDialogService messageDialogService)
+        {
             EventAggregator = eventAggregator;
             MessageDialogService = messageDialogService;
             SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
@@ -117,6 +119,46 @@ namespace FriendOrganizer.UI.ViewModel
                   Id = this.Id,
                   ViewModelName = this.GetType().Name
               });
+
+        }
+            protected async Task SaveWithOptimisticConcurrencyAsync(Func<Task> saveFunc, Action afterSaveAction)
+            {
+                try
+                {
+                    await saveFunc();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    var databaseValues = ex.Entries.Single().GetDatabaseValues();
+                    if (databaseValues == null)
+                    {
+                        MessageDialogService.ShowInfoDialog("The entity has been deleted by another user");
+                        RaiseDetailDeletedEvent(Id);
+                        return;
+                    }
+
+                    var result = MessageDialogService.ShowOkCancelDialog("The entity has been changed in "
+                     + "the meantime by someone else. Click OK to save your changes anyway, click Cancel "
+                     + "to reload the entity from the database.", "Question");
+
+                    if (result == MessageDialogResult.OK)
+                    {
+                        // Update the original values with database-values
+                        var entry = ex.Entries.Single();
+                        entry.OriginalValues.SetValues(entry.GetDatabaseValues());
+                        await saveFunc();
+                    }
+                    else
+                    {
+                        // Reload entity from database
+                        await ex.Entries.Single().ReloadAsync();
+                        await LoadAsync(Id);
+                    }
+                };
+
+                afterSaveAction();
+            }
+           
         }
     }
-}
+

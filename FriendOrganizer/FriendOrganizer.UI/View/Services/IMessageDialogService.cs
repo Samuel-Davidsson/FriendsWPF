@@ -1,4 +1,6 @@
-﻿namespace FriendOrganizer.UI.View.Services
+﻿using System.Threading.Tasks;
+
+namespace FriendOrganizer.UI.View.Services
 {
     public interface IMessageDialogService
     {
