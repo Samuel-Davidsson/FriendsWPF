@@ -80,7 +80,6 @@ namespace FriendOrganizer.UI.ViewModel
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
             if (Friend.Id == 0)
             {
-                // Little trick to trigger the validation
                 Friend.FirstName = "";
             }
             SetTitle();
@@ -201,7 +200,7 @@ namespace FriendOrganizer.UI.ViewModel
             newNumber.PropertyChanged += FriendPhoneNumberWrapper_PropertyChanged;
             PhoneNumbers.Add(newNumber);
             Friend.Model.PhoneNumbers.Add(newNumber.Model);
-            newNumber.Number = ""; // Trigger validation :-)
+            newNumber.Number = "";
         }
 
         private void OnRemovePhoneNumberExecute()
