@@ -63,8 +63,9 @@
                         <TextBlock Text="*" Visibility="{Binding HasChanges,
               Converter={StaticResource booleanToVisibilityConverter}}"/>
                         <Button Command="{Binding CloseDetailViewCommand}" 
-                    VerticalContentAlignment="Top" Margin="2 0 2 2"
-                    Content="X" FontSize="20"/>
+                                Style="{StaticResource ChromelessButtonStyle}"
+                                VerticalAlignment="Top" Margin="2 0 2 2"
+                                Content="X" FontSize="20" Foreground="LightPink" />
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
