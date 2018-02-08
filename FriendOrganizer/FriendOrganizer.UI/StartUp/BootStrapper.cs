@@ -30,6 +30,7 @@ namespace FriendOrganizer.UI.StartUp
             builder.RegisterType<FriendRepository>().As<IFriendRepository>();
             builder.RegisterType<MeetingRepository>().As<IMeetingRepository>();
             builder.RegisterType<ProgrammingLanguageRepository>().As<IProgrammingLanguageRepository>();
+            builder.RegisterType<WeatherViewModel>().Keyed<IDetailViewModel>(nameof(WeatherViewModel));
             builder.RegisterType<MessageDialogService>().As<IMessageDialogService>();
 
             return builder.Build();

@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using FriendOrganizer.UI.StartUp;
 using System;
+using System.Globalization;
+using System.Threading;
 using System.Windows;
 
 namespace FriendOrganizer.UI
@@ -9,6 +11,8 @@ namespace FriendOrganizer.UI
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
             var bootstrapper = new BootStrapper();
             var container = bootstrapper.Bootstrap();
 

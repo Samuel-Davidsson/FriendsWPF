@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Collections.Generic;
 using System.Linq;
 using FriendOrganizer.UI.Event;
+using APIXULib;
 
 namespace FriendOrganizer.UI.ViewModel
 {
@@ -21,6 +22,7 @@ namespace FriendOrganizer.UI.ViewModel
         private Friend _selectedAvailableFriend;
         private Friend _selectedAddedFriend;
         private List<Friend> _allFriends;
+        private readonly string key = "876a92a2b3ed4f89aca130757170311";
 
         public MeetingDetailViewModel(IEventAggregator eventAggregator, IMessageDialogService messageDialogService,
             IMeetingRepository meetingRepository) : base(eventAggregator, messageDialogService)
@@ -29,6 +31,7 @@ namespace FriendOrganizer.UI.ViewModel
             eventAggregator.GetEvent<AfterDetailSavedEvent>().Subscribe(AfterDetailSaved);
             eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted);
 
+            ForecastPropList = new ObservableCollection<Forecastday>();
             AddedFriends = new ObservableCollection<Friend>();
             AvailableFriends = new ObservableCollection<Friend>();
             AddFriendCommand = new DelegateCommand(OnAddFriendExecute, OnAddFriendCanExecute);
@@ -48,6 +51,8 @@ namespace FriendOrganizer.UI.ViewModel
         public ICommand AddFriendCommand { get; }
 
         public ICommand RemoveFriendCommand { get; }
+
+        public ObservableCollection<Forecastday> ForecastPropList { get; set; }
 
         public ObservableCollection<Friend> AddedFriends { get; }
 
@@ -77,17 +82,51 @@ namespace FriendOrganizer.UI.ViewModel
 
         public override async Task LoadAsync(int meetingId)
         {
+            
             var meeting = meetingId > 0
               ? await _meetingRepository.GetByIdAsync(meetingId)
               : CreateNewMeeting();
 
-            Id = meetingId;
+            GetWeather(meeting);
 
+            Id = meetingId;
+            
             InitializeMeeting(meeting);
 
             _allFriends = await _meetingRepository.GetAllFriendsAsync();
 
             SetupPicklist();
+        }
+
+        private async void GetWeather(Meeting meeting)
+        {
+            IRepository repository = new Repository();
+
+            try
+            {
+                var forecastResultByIP = repository.GetWeatherDataByAutoIP(key, Days.Ten);
+                var forcastFrom = forecastResultByIP.forecast.forecastday;
+                var forcastTo = forecastResultByIP.forecast.forecastday;
+
+                var forcastDayFrom = forcastFrom.Find(x => x.date == meeting.DateFrom.ToString("yyyy-MM-dd"));
+                var forcastDayTo = forcastTo.Find(x => x.date == meeting.DateTo.ToString("yyyy-MM-dd"));
+
+                forcastDayFrom.day.condition.icon = "http:" + forcastDayFrom.day.condition.icon;
+                forcastDayTo.day.condition.icon = "http:" + forcastDayTo.day.condition.icon;
+
+                ForecastPropList.Clear();
+                ForecastPropList.Add(forcastDayFrom);
+                ForecastPropList.Add(forcastDayTo);
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
+                await MessageDialogService.ShowInfoDialogAsync($"Could not find weather data.");
+                return;
+            }
         }
 
         protected async override void OnDeleteExecute()
@@ -110,6 +149,7 @@ namespace FriendOrganizer.UI.ViewModel
         {
             await _meetingRepository.SaveAsync();
             HasChanges = _meetingRepository.HasChanges();
+            GetWeather(Meeting.Model);
             Id = Meeting.Id;
             RaiseDetailSavedEvent(Meeting.Id, Meeting.Title);
         }
@@ -166,7 +206,6 @@ namespace FriendOrganizer.UI.ViewModel
 
             if (Meeting.Id == 0)
             {
-                // Little trick to trigger the validation
                 Meeting.Title = "";
             }
             SetTitle();
